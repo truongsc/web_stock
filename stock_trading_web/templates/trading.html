@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Giao Dịch</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/Home.css') }}"
+    />
+  </head>
+  <body>
+    <div class="navbar">
+      <div class="nav-left">
+        <a href="{{ url_for('dashboard') }}" class="nav-item">Dashboard</a>
+        <a href="{{ url_for('detailed_dashboard') }}" class="nav-item"
+          >Tài chính doanh nghiệp
+        </a>
+        <a href="{{ url_for('trading') }}" class="nav-item">Giao Dịch</a>
+        <a href="{{ url_for('portfolio') }}" class="nav-item">Danh Mục</a>
+        <a href="{{ url_for('cash') }}" class="nav-item">Nạp/Rút Tiền</a>
+        <a href="{{ url_for('history') }}" class="nav-item">Lịch sử</a>
+      </div>
+      <div class="nav-right">
+        <div class="nav-item">Hi, {{ current_user.ten }}</div>
+        <a href="{{ url_for('logout') }}" class="nav-item">Đăng xuất</a>
+      </div>
+    </div>
+    <div class="dashboard-wrapper">
+      <div class="dashboard-container">
+        <div class="left-panel">
+          <div class="dashboard-header">
+            <h2 class="dashboard-title">Giao Dịch Cổ Phiếu</h2>
+          </div>
+          <div class="portfolio-box">
+            <h3 class="dashboard-title">Danh sách cổ phiếu</h3>
+            <table class="financial-table">
+              <thead>
+                <tr>
+                  <th>Mã CP</th>
+                  <th>Giá</th>
+                  <th>Khối lượng</th>
+                  <th>% Thay đổi</th>
+                  <th>Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for stock in stocks %}
+                <tr>
+                  <td>{{ stock.ma_cp }}</td>
+                  <td>${{ stock.gia }}</td>
+                  <td>{{ stock.volume }}</td>
+                  <td class="{{ 'green' if stock.change >= 0 else 'red' }}">
+                    {{ '%+.2f' % stock.change }}%
+                  </td>
+                  <td>
+                    <a href="{{ url_for('trade_stock', ma_cp=stock.ma_cp) }}"
+                      >Giao dịch</a
+                    >
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="right-panel">
+          <div class="news-box">
+            <h3 class="dashboard-title">📰 Tin tức thị trường</h3>
+            <div id="news-content">
+              {% if news %} {% for item in news %}
+              <div class="news-item">
+                <a href="{{ item.link }}" target="_blank" class="news-title"
+                  >{{ item.title }}</a
+                >
+              </div>
+              {% endfor %} {% else %}
+              <p>Không có tin tức để hiển thị</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

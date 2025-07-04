@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/Home.css') }}"
+    />
+    <style>
+      .update-price-section {
+        margin: 20px 0;
+      }
+      .heatmap-box {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+      }
+      #heatmap-table {
+        border-collapse: collapse;
+        width: 100%;
+        max-width: 450px;
+        margin: 0 auto;
+      }
+      #heatmap-table td {
+        border: 2px solid black;
+        width: 16.66%;
+        height: 70px;
+        text-align: center;
+        vertical-align: middle;
+        font-size: 14px;
+        color: white;
+        padding: 5px;
+      }
+      .negative {
+        background-color: #dc3545;
+      }
+      .positive {
+        background-color: #28a745;
+      }
+      .na {
+        background-color: #6c757d;
+        color: black;
+      }
+      .dashboard-wrapper {
+        padding: 20px;
+        max-width: 100%;
+        margin: 0 auto;
+      }
+      .dashboard-container {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+      .left-panel {
+        flex: 3;
+        min-width: 600px;
+      }
+      .right-panel {
+        flex: 1;
+        min-width: 400px;
+      }
+      .dashboard-row2 {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        align-items: stretch;
+      }
+      .dashboard-row3 {
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+        align-items: stretch;
+        justify-content: flex-start;
+      }
+      .chart-container {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        flex: 2;
+        min-width: 500px;
+        box-sizing: border-box;
+      }
+      .sector-chart-box {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        flex: 1;
+        min-width: 300px;
+        max-width: 500px;
+        box-sizing: border-box;
+      }
+      .heatmap-box {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        flex: 1;
+        min-width: 300px;
+        max-width: 500px;
+        box-sizing: border-box;
+      }
+      #heatmap-table {
+        border-collapse: collapse;
+        width: 100%;
+        max-width: 450px;
+        margin: 0 auto;
+      }
+      #heatmap-table td {
+        border: 2px solid black;
+        width: 16.66%;
+        height: 70px;
+        text-align: center;
+        vertical-align: middle;
+        font-size: 14px;
+        color: white;
+        padding: 5px;
+      }
+      .negative {
+        background-color: #dc3545;
+      }
+      .positive {
+        background-color: #28a745;
+      }
+      .na {
+        background-color: #6c757d;
+        color: black;
+      }
+      #sp500-chart {
+        width: 70% !important;
+        height: 450px !important;
+      }
+      #sector-chart {
+        width: 100% !important;
+        height: 300px !important;
+      }
+      .sankey-chart-container {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        flex: 2;
+        min-width: 500px;
+        margin-top: 20px;
+      }
+      .update-price-section {
+        margin: 20px 0;
+        text-align: center;
+      }
+      .btn-primary {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .btn-primary:hover {
+        background-color: #0056b3;
+      }
+      .stats-row {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+      .stat-box {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        flex: 1;
+        min-width: 200px;
+        text-align: center;
+      }
+      .stat-title {
+        font-size: 14px;
+        color: #7f8c8d;
+      }
+      .stat-value {
+        font-size: 20px;
+        font-weight: bold;
+        color: #2c3e50;
+        margin: 5px 0;
+      }
+      .stat-sub {
+        font-size: 12px;
+        color: #7f8c8d;
+      }
+      .stat-change {
+        font-weight: bold;
+      }
+      .green {
+        color: #28a745;
+      }
+      .red {
+        color: #dc3545;
+      }
+      .portfolio-box {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        margin-top: 20px;
+      }
+      .portfolio-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .portfolio-table th,
+      .portfolio-table td {
+        padding: 10px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+      }
+      .portfolio-table th {
+        background-color: #f8f9fa;
+        color: #2c3e50;
+      }
+    </style>
+    <!-- Thêm Plotly từ CDN cho Pie và Trend -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  </head>
+  <body>
+    <!-- Thanh điều hướng -->
+    <div class="navbar">
+      <div class="nav-left">
+        <a href="{{ url_for('dashboard') }}" class="nav-item">Dashboard</a>
+        <a href="{{ url_for('detailed_dashboard') }}" class="nav-item"
+          >Tài chính doanh nghiệp</a
+        >
+        <a href="{{ url_for('trading') }}" class="nav-item">Giao Dịch</a>
+        <a href="{{ url_for('portfolio') }}" class="nav-item">Danh Mục</a>
+        <a href="{{ url_for('cash') }}" class="nav-item">Nạp/Rút Tiền</a>
+        <a href="{{ url_for('history') }}" class="nav-item">Lịch sử</a>
+      </div>
+      <div class="nav-right">
+        <a
+          href="{{ url_for('profile') }}"
+          class="nav-item text-primary"
+          style="cursor: pointer"
+        >
+          Hi, {{ current_user.ten }}
+        </a>
+
+        <a href="{{ url_for('logout') }}" class="nav-item">Đăng xuất</a>
+      </div>
+    </div>
+    <!-- Dashboard -->
+    <div class="dashboard-wrapper">
+      <div class="dashboard-container">
+        <!-- Bên trái -->
+        <div class="left-panel">
+          <div class="dashboard-header">
+            <h2 class="dashboard-title">Dashboard</h2>
+            <div class="search-container">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="white"
+                class="bi bi-search search-icon"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"
+                />
+              </svg>
+              <form method="POST">
+                <input
+                  type="text"
+                  class="search-input"
+                  name="search"
+                  placeholder="Tìm kiếm cổ phiếu..."
+                  value="{{ request.form.get('search', '') }}"
+                />
+              </form>
+            </div>
+          </div>
+          <!-- 4 ô thống kê -->
+          <div class="stats-row">
+            <div class="stat-box">
+              <p class="stat-title">Tổng giá trị danh mục</p>
+              <p class="stat-value">${{ total_assets }}</p>
+              <div class="stat-sub">
+                <span
+                  class="stat-change {{ 'green' if profit_change >= 0 else 'red' }}"
+                  >{{ '%+.2f' % profit_change }}%</span
+                >
+                <span class="stat-label">so với hôm qua</span>
+              </div>
+            </div>
+            <div class="stat-box">
+              <p class="stat-title">Lãi/Lỗ</p>
+              <p class="stat-value">${{ profit }}</p>
+              <div class="stat-sub">
+                <span
+                  class="stat-change {{ 'green' if profit_change >= 0 else 'red' }}"
+                  >{{ '%+.2f' % profit_change }}%</span
+                >
+                <span class="stat-label">so với hôm qua</span>
+              </div>
+            </div>
+            <div class="stat-box">
+              <p class="stat-title">Tổng khối lượng giao dịch</p>
+              <p class="stat-value">{{ total_volume }}</p>
+              <div class="stat-sub">
+                <span
+                  class="stat-change {{ 'green' if volume_change >= 0 else 'red' }}"
+                  >{{ '%+.2f' % volume_change }}%</span
+                >
+                <span class="stat-label">so với hôm qua</span>
+              </div>
+            </div>
+            <div class="stat-box">
+              <p class="stat-title">Tổng giá trị giao dịch</p>
+              <p class="stat-value">${{ total_transaction_value }}</p>
+              <div class="stat-sub">
+                <span
+                  class="stat-change {{ 'green' if volume_change >= 0 else 'red' }}"
+                  >{{ '%+.2f' % volume_change }}%</span
+                >
+                <span class="stat-label">so với hôm qua</span>
+              </div>
+            </div>
+          </div>
+          <!-- Biểu đồ nến S&P 500 -->
+          <div class="dashboard-row2">
+            <div class="chart-container">
+              <h3>Biểu đồ S&P 500</h3>
+              {% if sp500_chart %}
+              <div id="sp500-chart"></div>
+              <script>
+                var sp500Chart = {{ sp500_chart | safe }};
+                Plotly.newPlot('sp500-chart', sp500Chart.data, sp500Chart.layout);
+              </script>
+              {% else %}
+              <p>Không có dữ liệu để hiển thị biểu đồ S&P 500.</p>
+              {% endif %}
+            </div>
+          </div>
+          <!-- Tỷ trọng các ngành và Heatmap -->
+          <div class="dashboard-row3">
+            <div class="sector-chart-box">
+              <h3>Tỷ trọng các ngành</h3>
+              {% if sector_chart %}
+              <div id="sector-chart"></div>
+              <script>
+                var sectorChart = {{ sector_chart | safe }};
+                sectorChart.layout = {
+                  ...sectorChart.layout,
+                  margin: { l: 50, r: 150, t: 30, b: 30 },
+                  font: { size: 10 },
+                  showlegend: true,
+                  legend: {
+                    orientation: "v",
+                    x: 1,
+                    xanchor: "left",
+                    y: 0.5,
+                    yanchor: "middle",
+                  },
+                  autosize: true,
+                };
+                Plotly.newPlot('sector-chart', sectorChart.data, sectorChart.layout);
+              </script>
+              {% else %}
+              <p>Không có dữ liệu để hiển thị tỷ trọng ngành.</p>
+              {% endif %}
+            </div>
+            <div class="heatmap-box">
+              <h3 class="dashboard-title">Heatmap thị trường</h3>
+              <table id="heatmap-table">
+                <tbody>
+                  {% for i in range(0, 5) %}
+                  <tr>
+                    {% for j in range(0, 6) %} {% set index = i * 6 + j %} {% if
+                    index < market_data|length %}
+                    <td
+                      class="{{ 'negative' if market_data[index].change < 0 else 'positive' }}"
+                    >
+                      {{ market_data[index].ma_cp }}<br />{{ '%+.2f' %
+                      market_data[index].change }}%
+                    </td>
+                    {% else %}
+                    <td class="na">N/A<br />0.00%</td>
+                    {% endif %} {% endfor %}
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Biểu đồ Sankey Lợi nhuận -->
+          <div class="dashboard-row2">
+            <div class="sankey-chart-container">
+              <h3>Biểu đồ Lợi nhuận (Sankey)</h3>
+              {% if profit_sankey %}
+              <div id="profit-sankey"></div>
+              <script>
+                var profitSankey = {{ profit_sankey | safe }};
+                Plotly.newPlot('profit-sankey', profitSankey.data, profitSankey.layout);
+              </script>
+              {% else %}
+              <p>Không có dữ liệu để hiển thị biểu đồ lợi nhuận.</p>
+              {% endif %}
+            </div>
+          </div>
+          <!-- Bảng danh mục -->
+          <div class="portfolio-box">
+            <div class="dashboard-header">
+              <h3 class="dashboard-title">Danh mục đầu tư</h3>
+              <div class="portfolio-actions">
+                {% if page > 1 %}
+                <a
+                  href="{{ url_for('dashboard', page=page-1) }}"
+                  class="action-btn"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-arrow-left"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"
+                    />
+                  </svg>
+                </a>
+                {% endif %} {% if page < total_pages %}
+                <a
+                  href="{{ url_for('dashboard', page=page+1) }}"
+                  class="action-btn"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-arrow-right"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"
+                    />
+                  </svg>
+                </a>
+                {% endif %}
+              </div>
+            </div>
+            <br />
+            <div class="portfolio-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Mã cổ phiếu</th>
+                    <th>Số lượng</th>
+                    <th>Giá hiện tại</th>
+                    <th>Giá trị</th>
+                    <th>% Thay đổi</th>
+                  </tr>
+                </thead>
+                <tbody id="portfolio-body">
+                  {% for holding in holdings %}
+                  <tr>
+                    <td>{{ holding.ma_cp }}</td>
+                    <td>{{ holding.so_luong }}</td>
+                    <td>${{ holding.gia }}</td>
+                    <td>${{ holding.gia_tri }}</td>
+                    <td class="{{ 'green' if holding.change >= 0 else 'red' }}">
+                      {{ '%+.2f' % holding.change }}%
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- Bên phải -->
+        <div class="right-panel">
+          <div class="news-box">
+            <h3 class="dashboard-title">📰 Tin tức thị trường</h3>
+            <br />
+            <div id="news-content">Đang tải tin tức...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Vẽ biểu đồ Pie và Trend với Plotly
+      var pieChart = {{ pie_chart | safe }};
+      Plotly.newPlot('pie-chart', pieChart.data, pieChart.layout);
+      var trendChart = {{ trend_chart | safe }};
+      Plotly.newPlot('trend-chart', trendChart.data, trendChart.layout);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trang chủ</title>
+  <link rel="stylesheet" href="css/Home.css">
+</head>
+<body>
+<!-- Thanh điều hướng -->
+  <div class="navbar">
+    <div class="nav-left">
+      <div class="nav-item">Dashboard</div>
+    </div>
+    <div class="nav-right">
+      <div class="nav-item">Hi, Tiến</div>
+      <div class="nav-item">Đăng xuất</div>
+    </div>
+  </div>
+<!-- Dashboard -->
+<div class="dashboard-wrapper">
+  <div class="dashboard-container">
+    <!-- Bên trái -->
+    <div class="left-panel">
+      <div class="dashboard-header">
+        <h2 class="dashboard-title">&nbsp;&nbsp;Dashboard</h2>
+        <div class="search-container">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-search search-icon" viewBox="0 0 16 16">
+            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+          </svg>
+          <input type="text" class="search-input" placeholder="Tìm kiếm...">
+        </div>
+      </div>
+        <!-- 4 ô nhỏ -->
+      <div class="stats-row">
+            <div class="stat-box">
+                <p class="stat-title">Tổng giá trị danh mục</p>
+                <p class="stat-value">1.000 tỷ vnd</p>
+                <div class="stat-sub">
+                    <span class="stat-change red">-5.88%</span>
+                    <span class="stat-label">so với hôm qua</span>
+                </div>
+            </div>
+            <div class="stat-box">
+                <p class="stat-title">Lãi/Lỗ</p>
+                <p class="stat-value">-10 tỷ vnd</p>
+                <div class="stat-sub">
+                    <span class="stat-change red">-1.5%</span>
+                    <span class="stat-label">HPY</span>
+                </div>
+            </div>
+            <div class="stat-box">
+                <p class="stat-title">Tổng khối lượng giao dịch</p>
+                <p class="stat-value">102020</p>
+                <div class="stat-sub">
+                    <span class="stat-change red">-1.5%</span>
+                    <span class="stat-label">so với hôm qua</span>
+                </div>
+            </div>
+            <div class="stat-box">
+                <p class="stat-title">Tổng giá trị giao dịch</p>
+                <p class="stat-value">20202030</p>
+                <div class="stat-sub">
+                    <span class="stat-change red">-1.5%</span>
+                    <span class="stat-label">so với hôm qua</span>
+                </div>
+            </div>
+      </div>
+    <!-- ô biểu đồ và ô heatmap-->
+      <div class="dashboard-row2">
+        <div class="chart-box">
+          <div>
+            <h3 class="dashboard-title">&nbsp;&nbsp;&nbsp;VNIndex - Demo</h3>
+            <canvas id="myChart"></canvas>
+          </div>
+        </div>
+        <div class="heatmap-box">
+          <h3 class="dashboard-title">&nbsp;&nbsp;Heatmap</h3>
+          <canvas id="heatmapChart" width="400" height="200"></canvas>
+        </div>
+      </div>
+    <!-- ô thông tin danh mục-->
+      <div class="portfolio-box">
+        <div class="dashboard-header"> 
+          <h3 class="dashboard-title">Danh mục đầu tư</h3>
+            <div class="portfolio-actions">
+              <button class="action-btn" onclick="prevPage()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                </svg>
+              </button>
+              <button class="action-btn" onclick="nextPage()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+                </svg>
+              </button>
+          </div>
+        </div>
+        <br>
+        <div class="portfolio-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Mã cổ phiếu</th>
+                <th>Tên công ty</th>
+                <th>Thông tin 1</th>
+                <th>Thông tin 2</th>
+                <th>Thông tin 3</th>
+                <th>Thông tin 4</th>
+              </tr>
+            </thead>
+            <tbody id="portfolio-body">
+              <!-- <tr>
+                <td>FPT</td>
+                <td>CTCP FPT</td>
+              </tr>
+              <tr>
+                <td>VNM</td>
+                <td>Vinamilk</td>
+              </tr>
+              <tr>
+                <td>VNM</td>
+                <td>Vinamilk</td>
+              </tr>
+              <tr>
+                <td>VNM</td>
+                <td>Vinamilk</td>
+              </tr> -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+    <!-- Bên phải -->
+    <div class="right-panel">
+      <!-- Ô biểu đồ tròn -->
+      <div class="piechar-box">
+        <h3 class="dashboard-title">Tỷ trọng danh mục đầu tư</h3>
+        <div class="portfolio-pie-chart">
+          <canvas id="portfolioPieChart" width="300" height="300"></canvas>
+        </div>
+      </div>
+
+      <div class="news-box">
+        <h3 class="dashboard-title">📰 Tin tức thị trường</h3>
+        <br>
+         <div id="news-content">Đang tải tin tức...</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<!-- js thêm vào để vẽ biểu đồ demo - có thể xóa -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@1.1.0/dist/chartjs-chart-matrix.min.js"></script>
+<script src="js/DemoChart.js"></script>
+<script src="js/Portfolio.js"></script>
+<script src="js/NewsGenAI.js"></script>
+</html>

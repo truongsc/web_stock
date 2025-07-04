@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Danh Mục</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Home.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js" defer></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
+    .dashboard-wrapper { padding: 20px; }
+    .dashboard-container { display: flex; gap: 20px; }
+    .left-panel, .right-panel { flex: 1; }
+    .chart-box, .portfolio-box, .calendar-box { background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 15px; margin-bottom: 20px; }
+    .stats-row { display: flex; gap: 15px; margin-bottom: 20px; }
+    .stat-box { flex: 1; background-color: #ffffff; border-radius: 8px; padding: 10px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .stat-title { font-size: 14px; color: #666; margin: 0; }
+    .stat-value { font-size: 18px; font-weight: bold; margin: 5px 0 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    .calendar-table { width: 100%; max-width: 600px; border-collapse: collapse; margin: 20px auto; }
+    .calendar-table th, .calendar-table td { border: 1px solid #ddd; padding: 10px; text-align: center; background-color: #ffffff; }
+    .calendar-table th { background-color: #f2f2f2; }
+    .calendar-table td div { margin: 2px 0; }
+    .alert { padding: 10px; border-radius: 5px; margin-bottom: 10px; }
+    .alert-info { background-color: #d1ecf1; color: #0c5460; }
+    .alert-dismissible .btn-close { float: right; cursor: pointer; }
+    select, button { padding: 5px; margin: 5px 0; border-radius: 5px; border: 1px solid #ddd; }
+    button { background-color: #007bff; color: white; border: none; cursor: pointer; }
+    button:hover { background-color: #0056b3; }
+    .dashboard-title { margin: 0 0 10px; font-size: 20px; }
+    .news-box { background-color: #ffffff; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .no-data { color: #dc3545; text-align: center; }
+    #stock-profit-chart { height: 400px; }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div class="nav-left">
+      <a href="{{ url_for('dashboard') }}" class="nav-item">Dashboard</a>
+      <a href="{{ url_for('detailed_dashboard') }}" class="nav-item">Tài chính doanh nghiệp</a>
+      <a href="{{ url_for('trading') }}" class="nav-item">Giao Dịch</a>
+      <a href="{{ url_for('portfolio') }}" class="nav-item">Danh Mục</a>
+      <a href="{{ url_for('cash') }}" class="nav-item">Nạp/Rút Tiền</a>
+      <a href="{{ url_for('history') }}" class="nav-item">Lịch sử</a>
+    </div>
+    <div class="nav-right">
+      <a href="{{ url_for('profile') }}" class="nav-item text-primary" style="cursor: pointer;">
+        Hi, {{ current_user.ten }}
+      </a>
+      <a href="{{ url_for('logout') }}" class="nav-item">Đăng xuất</a>
+    </div>
+  </div>
+
+  <div class="dashboard-wrapper">
+    <div class="dashboard-container">
+      <div class="left-panel">
+        <div class="dashboard-header">
+          <h2 class="dashboard-title">Danh Mục Đầu Tư</h2>
+        </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        <div class="stats-row">
+          <div class="stat-box">
+            <p class="stat-title">Tổng tài sản</p>
+            <p class="stat-value">${{ total_assets }}</p>
+          </div>
+          <div class="stat-box">
+            <p class="stat-title">Tiền mặt</p>
+            <p class="stat-value">${{ cash }}</p>
+          </div>
+        </div>
+        <div class="mb-3">
+          <form action="{{ url_for('confirm_trade') }}" method="POST">
+            <button type="submit">Chốt kết quả giao dịch</button>
+          </form>
+        </div>
+        <div class="portfolio-box">
+          <h3 class="dashboard-title">Cổ phiếu sở hữu</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Mã CP</th>
+                <th>Tên công ty</th>
+                <th>Số lượng</th>
+                <th>Giá hiện tại</th>
+                <th>Giá trị</th>
+                <th>Chi tiết</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for stock in portfolio_stocks %}
+              <tr>
+                <td>{{ stock.ma_cp }}</td>
+                <td>{{ stock.ten_cong_ty }}</td>
+                <td>{{ stock.so_luong }}</td>
+                <td>${{ stock.gia }}</td>
+                <td>${{ stock.gia_tri }}</td>
+                <td><a href="{{ url_for('stock_detail', ma_cp=stock.ma_cp) }}">Chi tiết</a></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="chart-box">
+          <h3 class="dashboard-title">Xu hướng tổng tài sản</h3>
+          <form method="POST">
+            <label for="timeframe">Chọn khung thời gian:</label>
+            <select id="timeframe" name="timeframe">
+              <option value="day" {% if timeframe == 'day' %}selected{% endif %}>Ngày</option>
+              <option value="week" {% if timeframe == 'week' %}selected{% endif %}>Tuần</option>
+              <option value="month" {% if timeframe == 'month' %}selected{% endif %}>Tháng</option>
+            </select>
+            <button type="submit">Xem</button>
+          </form>
+          <canvas id="asset-trend-chart" style="max-height: 300px;"></canvas>
+        </div>
+        <div class="chart-box">
+          <h3 class="dashboard-title">Xu hướng lợi nhuận cộng dồn</h3>
+          <canvas id="profit-trend-chart" style="max-height: 300px;"></canvas>
+        </div>
+        <div class="chart-box">
+          <h3 class="dashboard-title">Lợi nhuận theo thời gian</h3>
+          <canvas id="bar-chart" style="max-height: 300px;"></canvas>
+        </div>
+        <div class="chart-box">
+          <h3 class="dashboard-title">Lợi nhuận của từng mã cổ phiếu</h3>
+          <canvas id="stock-profit-chart" style="max-height: 400px;"></canvas>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <div class="chart-box">
+          <h3 class="dashboard-title">Tỷ trọng tài sản</h3>
+          <canvas id="pie-chart" style="max-height: 300px;"></canvas>
+        </div>
+        <div class="calendar-box">
+          <h3 class="dashboard-title">Lợi nhuận theo lịch - {{ current_month }}</h3>
+          <form method="post" id="calendar-form">
+            <select name="month" onchange="document.getElementById('calendar-form').submit()">
+              {% for year, month_num in available_months %}
+                <option value="{{ year }}-{{ '%02d'|format(month_num) }}" {% if selected_month == year|string + '-' + ('%02d'|format(month_num)) %}selected{% endif %}>
+                  Tháng {{ month_num }}/{{ year }}
+                </option>
+              {% endfor %}
+            </select>
+          </form>
+          {% if calendar_profit_data %}
+            <table class="calendar-table">
+              <tr>
+                <th>Th 2</th><th>Th 3</th><th>Th 4</th><th>Th 5</th><th>Th 6</th><th>Th 7</th><th>CN</th>
+              </tr>
+              {% for week in calendar_profit_data %}
+              <tr>
+                {% for day in week %}
+                <td>
+                  {% if day.day %}
+                    <div>{{ day.day }}</div>
+                    <div style="color: {{ day.color }};">{{ day.profit_display }}</div>
+                  {% else %}
+                    <div></div><div></div>
+                  {% endif %}
+                </td>
+                {% endfor %}
+              </tr>
+              {% endfor %}
+            </table>
+          {% else %}
+            <div class="no-data">Không có dữ liệu lợi nhuận cho tháng này.</div>
+          {% endif %}
+        </div>
+        <div class="news-box">
+          <h3 class="dashboard-title">📰 Tin tức thị trường</h3>
+          <div id="news-content">Đang tải tin tức...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.onload = function() {
+      if (typeof Chart === 'undefined') {
+        console.error('Chart.js không được tải. Kiểm tra kết nối mạng hoặc URL CDN.');
+        return;
+      }
+
+      new Chart(document.getElementById('pie-chart'), {
+        type: 'pie',
+        data: {{ pie_data | tojson }},
+        options: {
+          responsive: true,
+          plugins: { legend: { position: 'top' }, title: { display: true, text: 'Tỷ trọng tài sản' } }
+        }
+      });
+
+      new Chart(document.getElementById('asset-trend-chart'), {
+        type: 'line',
+        data: {{ asset_trend_data | tojson }},
+        options: {
+          responsive: true,
+          plugins: { legend: { display: true }, title: { display: true, text: 'Xu hướng tổng tài sản' } },
+          scales: { y: { beginAtZero: false, title: { display: true, text: 'Giá trị ($)' } } }
+        }
+      });
+
+      new Chart(document.getElementById('profit-trend-chart'), {
+        type: 'line',
+        data: {{ profit_trend_data | tojson }},
+        options: {
+          responsive: true,
+          plugins: { legend: { display: true }, title: { display: true, text: 'Xu hướng lợi nhuận cộng dồn' } },
+          scales: { y: { beginAtZero: false, title: { display: true, text: 'Lợi nhuận ($)' } } }
+        }
+      });
+
+      new Chart(document.getElementById('bar-chart'), {
+        type: 'bar',
+        data: {{ bar_data | tojson }},
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false }, title: { display: true, text: 'Lợi nhuận theo thời gian' } },
+          scales: { y: { beginAtZero: true, title: { display: true, text: 'Lợi nhuận ($)' } } }
+        }
+      });
+
+      // Biểu đồ cột cho lợi nhuận của từng mã cổ phiếu
+      new Chart(document.getElementById('stock-profit-chart'), {
+        type: 'bar',
+        data: {{ stock_profit_data | tojson }},
+        options: {
+          responsive: true,
+          plugins: { 
+            legend: { display: false }, 
+            title: { display: true, text: 'Lợi nhuận của từng mã cổ phiếu' } 
+          },
+          scales: { 
+            y: { 
+              beginAtZero: true, 
+              title: { display: true, text: 'Lợi nhuận ($)' },
+              ticks: { callback: function(value) { return '$' + value; } }
+            }
+          }
+        }
+      });
+    };
+  </script>
+</body>
+</html>

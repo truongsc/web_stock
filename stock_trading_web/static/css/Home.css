@@ -1,0 +1,370 @@
+/* Css cho thanh Nav */
+body {
+  margin: 0;
+  background-color: #17431b; /* Màu nền giống ảnh */
+  font-family: Arial, sans-serif;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #17431b;
+  padding: 3px 20px;
+  height: 60px;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  background-color: #317e39;
+  border-radius: 999px;
+
+  flex-grow: 1;
+  margin-right: 20px;
+}
+
+.nav-item {
+  background-color: #a9e277;
+  color: #256002;
+  font-family: "Google Sans";
+  font-weight: bold;
+  padding: 8px 20px;
+  border-radius: 25px;
+  margin-right: 10px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  height: 100%;
+}
+
+.nav-right {
+  display: flex;
+  gap: 2px;
+}
+
+/*Dash board*/
+.dashboard-wrapper {
+  max-width: 97%;
+  margin: 0px auto 20px auto;
+  background-color: #f1f4e7;
+  border-radius: 25px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+.dashboard-container {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  background-color: #f1f4e7;
+  /* Vừa chỉnh lại height từ calc(100vh - 60px) --> flex để nó k bị cố định cái chiều rộng */
+  height: flex;
+  box-sizing: border-box;
+}
+
+.left-panel {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.right-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+.search-container {
+  position: relative;
+  width: 220px;
+}
+.search-input {
+  padding: 8px 0px 8px 32px;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  font-family: "Google Sans";
+  font-weight: bold;
+  width: 200px;
+  background-color: #17431b;
+  color: white;
+  outline: none;
+}
+.search-input::placeholder {
+  color: white;
+  font-family: "Google Sans";
+  font-weight: normal;
+  opacity: 1;
+}
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.dashboard-title {
+  color: #164515;
+  font-family: "Arial";
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+}
+/* 4 ô thông tin */
+.stats-row {
+  display: flex;
+  gap: 40px;
+}
+
+.stat-box {
+  background-color: #fefefe;
+  border-radius: 20px;
+  padding: 8px 27px;
+  box-shadow: 0 2px 6px rgba(47, 249, 87, 0.1);
+  flex: 1;
+}
+
+.stat-title {
+  font-family: "Arial";
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+  margin-top: 6px;
+}
+
+.stat-value {
+  font-size: 25px;
+  font-weight: bold;
+  font-family: "Arial";
+  margin-top: 0px;
+  margin-bottom: 10px;
+  color: #000;
+}
+
+.stat-sub {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.stat-change {
+  font-weight: bold;
+  font-size: 14px;
+  font-family: "Arial";
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: #ff4a3a;
+  color: #000000;
+}
+
+.stat-label {
+  font-size: 14px;
+  font-family: "Arial";
+  color: #666;
+}
+/* Biểu đồ và heatmap */
+.dashboard-row2 {
+  display: flex;
+  gap: 20px; /* khoảng cách giữa biểu đồ và heatmap */
+  margin-top: 20px;
+  flex-wrap: wrap; /* nếu thu nhỏ màn hình, nó sẽ xuống hàng thay vì vỡ layout */
+}
+.chart-box {
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(100, 255, 131, 0.1);
+  width: flex;
+  flex: 1;
+  min-width: 300px;
+  max-width: none;
+  margin: 20px 0;
+}
+.heatmap-box {
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(100, 255, 131, 0.1);
+  width: flex;
+  flex: 1;
+  min-width: 300px;
+  max-width: none;
+  margin: 20px 0;
+}
+/* Điều chỉnh cao rộng của biểu đồ */
+canvas {
+  max-width: flex;
+  height: 50px;
+}
+/* Danh mục đầu tư */
+.portfolio-box {
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 20px;
+}
+.action-btn {
+  width: 50px;
+  height: 20px;
+  border-radius: 8px;
+  background-color: #a9e277;
+  border: none;
+  cursor: pointer;
+}
+
+.portfolio-table {
+  background-color: #fff;
+  border: 1px solid #000000;
+  border-radius: 12px;
+  padding: 10px;
+  overflow-x: auto;
+}
+
+.portfolio-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.portfolio-table th,
+.portfolio-table td {
+  text-align: left;
+  padding: 5px 5px;
+  font-size: 14px;
+}
+
+.portfolio-table th {
+  color: #000;
+  font-weight: 600;
+}
+/* Biểu đồ tròn */
+.piechar-box {
+  background-color: #fff;
+  flex: 1;
+  border-radius: 20px;
+  padding: 20px;
+}
+.portfolio-pie-chart {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+/*Ô tin tức*/
+.news-box {
+  background-color: #fff;
+  flex: 1;
+  border-radius: 20px;
+  padding: 20px;
+}
+.stat-box {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 5px;
+  flex: 1;
+  text-align: center;
+}
+.stat-title {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+.stat-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin: 5px 0 0;
+}
+.green {
+  color: #28a745;
+}
+
+.red {
+  color: #dc3545;
+}
+
+.stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+/* News box */
+.news-box {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+/* News item */
+.news-item {
+  margin-bottom: 15px;
+}
+
+.news-title {
+  font-size: 16px;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.news-title:hover {
+  text-decoration: underline;
+}
+
+/* Financial table (cho portfolio, trading, trade_stock) */
+.financial-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.financial-table th,
+.financial-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.financial-table th {
+  background-color: #f4f4f4;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+
+  .stat-box {
+    min-width: 100%;
+  }
+}
+
+/* Flash messages */
+.flash-messages {
+  max-width: 1200px;
+  margin: 10px auto;
+  padding: 0 20px;
+}
+
+.flash-message {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.flash-message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-color: #f5c6cb;
+}

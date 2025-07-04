@@ -1,0 +1,268 @@
+/* Css cho thanh Nav */
+body {
+    margin: 0;
+    background-color: #17431b; /* Màu nền giống ảnh */
+    font-family: Arial, sans-serif;
+  }
+
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #17431b;
+    padding: 3px 20px;
+    height: 60px;
+  }
+
+  .nav-left {
+    display: flex;
+    align-items: center;
+    background-color: #317E39;
+    border-radius: 999px;
+   
+    flex-grow: 1;
+    margin-right: 20px;
+    
+  }
+
+  .nav-item {
+    background-color: #A9E277;
+    color: #256002;
+    font-family: "Google Sans";
+    font-weight: bold;
+    padding: 8px 20px;
+    border-radius: 25px;
+    margin-right: 10px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    height: 100%;
+  }
+
+  .nav-right {
+    display: flex;
+    gap: 2px;
+  }
+
+/*Dash board*/
+.dashboard-wrapper {
+    max-width: 97%; 
+    margin: 0px auto 20px auto;
+    background-color: #f1f4e7;
+    border-radius: 25px;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+.dashboard-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    background-color: #f1f4e7;
+    /* Vừa chỉnh lại height từ calc(100vh - 60px) --> flex để nó k bị cố định cái chiều rộng */
+    height: flex; 
+    box-sizing: border-box;
+  }
+  
+  .left-panel {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .right-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px; 
+  }
+  .search-container {
+    position: relative;
+    width: 220px;
+  }
+  .search-input {
+    padding: 8px 0px 8px 32px ;
+    border: none; 
+    border-radius: 20px;
+    font-size: 14px;
+    font-family: "Google Sans";
+    font-weight: bold;
+    width: 200px;
+    background-color: #17431B; 
+    color: white; 
+    outline: none; 
+  }
+  .search-input::placeholder {
+    color: white;
+    font-family: "Google Sans";
+    font-weight: normal;
+    opacity: 1; 
+  }
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none; 
+  }
+  .dashboard-title {
+    color: #164515;
+    font-family: "Arial";
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+  }
+  /* 4 ô thông tin */
+  .stats-row {
+    display: flex;
+    gap: 40px;
+  }
+  
+.stat-box {
+    background-color: #FEFEFE;
+    border-radius: 20px;
+    padding: 8px 27px;
+    box-shadow: 0 2px 6px rgba(47, 249, 87, 0.1);
+    flex: 1;
+  }
+  
+.stat-title {
+    font-family: "Arial";
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+    margin-top: 6px;
+  }
+  
+.stat-value {
+    font-size: 25px;
+    font-weight: bold;
+    font-family: "Arial";
+    margin-top: 0px;
+    margin-bottom: 10px;
+    color: #000;
+  }
+  
+  .stat-sub {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+
+  }
+  
+  .stat-change {
+    font-weight: bold;
+    font-size: 14px;
+    font-family: "Arial";
+    padding: 2px 6px;
+    border-radius: 4px;
+    background-color: #FF4A3A;
+    color: #000000;
+  }
+  
+  .stat-label {
+    font-size: 14px;
+    font-family: "Arial";
+    color: #666;
+  }
+  /* Biểu đồ và heatmap */
+  .dashboard-row2 {
+    display: flex;
+    gap: 20px; /* khoảng cách giữa biểu đồ và heatmap */
+    margin-top: 20px;
+    flex-wrap: wrap; /* nếu thu nhỏ màn hình, nó sẽ xuống hàng thay vì vỡ layout */
+  }
+  .chart-box {
+    
+      background-color: #fff;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(100, 255, 131, 0.1);
+      width: flex; 
+      flex: 1;
+      min-width: 300px;
+      max-width: none;
+      margin: 20px 0;
+    
+  }
+  .heatmap-box {
+    background-color: #fff;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(100, 255, 131, 0.1);
+      width: flex; 
+      flex: 1;
+      min-width: 300px;
+      max-width: none;
+      margin: 20px 0;
+  }
+  /* Điều chỉnh cao rộng của biểu đồ */
+  canvas {
+    max-width: flex;
+    height: 50px;
+  }
+  /* Danh mục đầu tư */
+  .portfolio-box {
+    background-color: #fff;
+    border-radius: 20px;
+    padding: 20px;
+  }
+  .action-btn {
+    width: 50px;
+    height: 20px;
+    border-radius: 8px;
+    background-color: #A9E277;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .portfolio-table {
+    background-color: #fff;
+    border: 1px solid #000000;
+    border-radius: 12px;
+    padding: 10px;
+    overflow-x: auto;
+  }
+  
+  .portfolio-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .portfolio-table th,
+  .portfolio-table td {
+    text-align: left;
+    padding: 5px 5px;
+    font-size: 14px;
+  }
+  
+  .portfolio-table th {
+    color: #000;
+    font-weight: 600;
+  }
+  /* Biểu đồ tròn */
+  .piechar-box {
+    background-color: #fff;
+    flex: 1;
+    border-radius: 20px;
+    padding: 20px;
+  }
+  .portfolio-pie-chart {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  /*Ô tin tức*/
+  .news-box {
+    background-color: #fff;
+    flex: 1;
+    border-radius: 20px;
+    padding: 20px;
+  }
+  

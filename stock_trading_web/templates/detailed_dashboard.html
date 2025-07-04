@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tài chính doanh nghiệp</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/Home.css') }}"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body {
+        background-color: #f8f9fa;
+        font-family: "Segoe UI", sans-serif;
+      }
+      .chart-container {
+        height: 400px;
+        padding: 20px;
+        margin-bottom: 30px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        text-align: center;
+        color: #2c3e50;
+        font-weight: bold;
+        margin-bottom: 40px;
+      }
+      .chart-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #2c3e50;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <div class="nav-left">
+        <a href="{{ url_for('dashboard') }}" class="nav-item">Dashboard</a>
+        <a href="{{ url_for('detailed_dashboard') }}" class="nav-item"
+          >Tài chính doanh nghiệp
+        </a>
+        <a href="{{ url_for('trading') }}" class="nav-item">Giao Dịch</a>
+        <a href="{{ url_for('portfolio') }}" class="nav-item">Danh Mục</a>
+        <a href="{{ url_for('cash') }}" class="nav-item">Nạp/Rút Tiền</a>
+        <a href="{{ url_for('history') }}" class="nav-item">Lịch sử</a>
+      </div>
+      <div class="nav-right">
+        <a
+          href="{{ url_for('profile') }}"
+          class="nav-item text-primary"
+          style="cursor: pointer"
+        >
+          Hi, {{ current_user.ten }}
+        </a>
+
+        <a href="{{ url_for('logout') }}" class="nav-item">Đăng xuất</a>
+      </div>
+    </div>
+    <div class="container mt-5">
+      <h1>Tài chính Doanh nghiệp</h1>
+
+      <!-- Hàng 1 -->
+      <div class="row">
+        <div class="col-md-6">
+          <div class="chart-container">
+            <div class="chart-title">Doanh thu theo năm</div>
+            <canvas id="revenueChart"></canvas>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="chart-container">
+            <div class="chart-title">Lợi nhuận ròng theo năm</div>
+            <canvas id="netIncomeChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hàng 2 -->
+      <div class="row">
+        <div class="col-md-6">
+          <div class="chart-container">
+            <div class="chart-title">Dòng tiền tự do (FCF)</div>
+            <canvas id="cashFlowChart"></canvas>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="chart-container">
+            <div class="chart-title">Tỷ lệ P/E</div>
+            <canvas id="peRatioChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hàng 3 -->
+      <div class="row">
+        <div class="col-md-6">
+          <div class="chart-container">
+            <div class="chart-title">Tỷ suất cổ tức (%)</div>
+            <canvas id="dividendYieldChart"></canvas>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="chart-container">
+            <div class="chart-title">EPS (Thu nhập trên cổ phiếu)</div>
+            <canvas id="epsChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hàng 4 -->
+      <div class="row">
+        <div class="col-md-6">
+          <div class="chart-container">
+            <div class="chart-title">Vốn hóa thị trường (Market Cap)</div>
+            <canvas id="marketCapChart"></canvas>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="chart-container">
+            <div class="chart-title">Beta (Độ nhạy thị trường)</div>
+            <canvas id="betaChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart.js scripts -->
+    <script>
+                                    const revenueData = {{ revenue_data | safe }};
+                                    const netIncomeData = {{ net_income_data | safe }};
+                                    const cashFlowData = {{ cash_flow_data | safe }};
+                                    const peRatioData = {{ pe_ratio_data | safe }};
+                                    const dividendYieldData = {{ dividend_yield_data | safe }};
+                                    const epsData = {{ eps_data | safe }};
+                                    const marketCapData = {{ market_cap_data | safe }};
+                                    const betaData = {{ beta_data | safe }};
+
+                                    const defaultOptions = {
+                                      responsive: true,
+                                      maintainAspectRatio: false,
+                                      plugins: {
+                                        legend: { position: 'top', labels: { font: { size: 12 } } },
+                                        tooltip: { mode: 'index', intersect: false }
+                                      },
+                                      scales: {
+                                        y: {
+                                          beginAtZero: true,
+                                          title: { display: true, font: { size: 13 } }
+                                        },
+                                        x: {
+                                          ticks: { font: { size: 11 } }
+                                        }
+                                      }
+                                    };
+
+                                    // 1. Line chart - Doanh thu
+                                    new Chart(revenueChart, {
+                                      type: 'line',
+                                      data: revenueData,
+                                      options: defaultOptions
+                                    });
+
+                                    // 2. Bar chart - Lợi nhuận
+                                    new Chart(netIncomeChart, {
+                                      type: 'bar',
+                                      data: netIncomeData,
+                                      options: defaultOptions
+                                    });
+
+                                    // 3. Line chart - FCF
+                                    new Chart(cashFlowChart, {
+                                      type: 'line',
+                                      data: cashFlowData,
+                                      options: defaultOptions
+                                    });
+
+                                    // 4. Radar chart - P/E
+                                    new Chart(peRatioChart, {
+                    type: 'polarArea',
+                    data: peRatioData,
+                    options: {
+                      responsive: true,
+                      plugins: {
+                        legend: { position: 'right' },
+                        tooltip: { callbacks: {
+                          label: (ctx) => `${ctx.label}: ${ctx.raw}`
+                        }}
+                      }
+                    }
+                  });
+
+
+                                    // 5. Doughnut - Tỷ suất cổ tức
+                                    new Chart(dividendYieldChart, {
+              type: 'bar',
+              data: dividendYieldData,
+              options: {
+                indexAxis: 'y',
+                responsive: true,
+                plugins: {
+                  legend: { display: false }
+                },
+                scales: {
+                  x: {
+                    beginAtZero: true,
+                    title: { display: true, text: 'Tỷ suất cổ tức (%)' }
+                  }
+                }
+              }
+            });
+
+
+                                    // 6. Bar chart - EPS
+                                    new Chart(epsChart, {
+        type: 'radar',
+        data: epsData,
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'top' },
+          },
+          scales: {
+            r: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+
+
+                                    new Chart(marketCapChart, {
+                          type: 'bubble',
+                          data: marketCapData,
+                          options: {
+                            responsive: true,
+                            plugins: {
+                              legend: { position: 'top' },
+                              tooltip: {
+                                callbacks: {
+                                  label: function(context) {
+                                    const point = context.raw;
+                                    const label = point.ma_cp || 'Chưa rõ';
+                                    const marketCap = (point.r ** 2).toFixed(2) + 'B';
+                                    return `${label}: Market Cap ~ ${marketCap}, Beta = ${point.y}`;
+                                  }
+                                }
+                              }
+                            },
+                            scales: {
+                              x: {
+                                title: { display: true, text: 'Index' },
+                                beginAtZero: true
+                              },
+                              y: {
+                                title: { display: true, text: 'Beta' },
+                                beginAtZero: true
+                              }
+                            }
+                          }
+                        });
+
+
+
+                                    // 8. Horizontal bar - Beta
+                                    new Chart(betaChart, {
+                                      type: 'bar',
+                                      data: betaData,
+                                      options: {
+                                        indexAxis: 'y',
+                                        responsive: true,
+                                        plugins: { legend: { display: false } },
+                                        scales: {
+                                          x: {
+                                            beginAtZero: true
+                                          }
+                                        }
+                                      }
+                                    });
+    </script>
+  </body>
+</html>

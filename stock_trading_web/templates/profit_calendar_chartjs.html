@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Lịch Lợi nhuận (Chart.js)</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/Home.css') }}"
+    />
+    <style>
+      .chart-box {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        margin: 20px auto;
+        max-width: 800px;
+      }
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f8f9fa;
+        padding: 10px 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      .nav-item {
+        margin: 0 10px;
+        text-decoration: none;
+        color: #333;
+        font-size: 16px;
+      }
+      .nav-item:hover {
+        color: #007bff;
+      }
+      #calendar-chart {
+        max-height: 400px;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@1.1.1/dist/chartjs-chart-matrix.min.js"></script>
+  </head>
+  <body>
+    <!-- Thanh điều hướng -->
+    <div class="navbar">
+      <div class="nav-left">
+        <a href="{{ url_for('dashboard') }}" class="nav-item">Dashboard</a>
+        <a href="{{ url_for('trading') }}" class="nav-item">Giao Dịch</a>
+        <a href="{{ url_for('portfolio') }}" class="nav-item">Danh Mục</a>
+        <a href="{{ url_for('cash') }}" class="nav-item">Nạp/Rút Tiền</a>
+        <a href="{{ url_for('history') }}" class="nav-item">Lịch sử</a>
+      </div>
+      <div class="nav-right">
+        <a href="{{ url_for('logout') }}" class="nav-item">Đăng xuất</a>
+      </div>
+    </div>
+
+    <!-- Nội dung -->
+    <div class="chart-box">
+      <h2 class="dashboard-title">
+        Lịch Lợi nhuận (Tháng {{ today.strftime('%B %Y') }})
+      </h2>
+      <canvas id="calendar-chart"></canvas>
+    </div>
+
+    <script>
+      const ctx = document.getElementById('calendar-chart').getContext('2d');
+      const chartData = {{ chart_data | tojson }};
+
+      new Chart(ctx, {
+        type: 'matrix',
+        data: {
+          datasets: [{
+            label: 'Lợi nhuận hàng ngày',
+            data: chartData,
+            backgroundColor: '#ffffff',  // Nền trắng cho tất cả ô
+            borderWidth: 1,
+            borderColor: '#cccccc',
+            width: ({ chart }) => (chart.chartArea || {}).width / 7 - 1,
+            height: ({ chart }) => (chart.chartArea || {}).height / {{ weeks }} - 1
+          }]
+        },
+        options: {
+          scales: {
+            x: {
+              type: 'category',
+              labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
+              title: { display: true, text: 'Ngày trong tuần' }
+            },
+            y: {
+              type: 'linear',
+              min: 0,
+              max: {{ weeks - 1 }},
+              reverse: true,
+              title: { display: true, text: 'Tuần' },
+              ticks: { stepSize: 1 }
+            }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (context) => {
+                  const data = context.raw;
+                  return `Ngày ${data.day}: Lợi nhuận ${data.profit_display}`;
+                }
+              }
+            },
+            afterDraw: (chart) => {
+              const ctx = chart.ctx;
+              chart.data.datasets.forEach((dataset) => {
+                dataset.data.forEach((data, index) => {
+                  const meta = chart.getDatasetMeta(0).data[index];
+                  const x = meta.x;
+                  const y = meta.y;
+                  const width = meta.width;
+                  const height = meta.height;
+
+                  // Vẽ số ngày (chữ đen)
+                  ctx.save();
+                  ctx.textAlign = 'center';
+                  ctx.textBaseline = 'middle';
+                  ctx.font = '12px Arial';
+                  ctx.fillStyle = '#000000';  // Chữ đen cho số ngày
+                  ctx.fillText(data.day, x, y - height / 4);
+
+                  // Vẽ lợi nhuận (màu tùy chỉnh)
+                  ctx.font = '10px Arial';
+                  ctx.fillStyle = data.profit_color;  // Màu tùy chỉnh cho lợi nhuận
+                  ctx.fillText(data.profit_display, x, y + height / 4);
+                  ctx.restore();
+                });
+              });
+            }
+          },
+          maintainAspectRatio: false,
+          height: 400
+        }
+      });
+    </script>
+  </body>
+</html>

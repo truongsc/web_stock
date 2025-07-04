@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Stock Trading</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f5f5;
+      }
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        background-color: #333;
+        padding: 10px 20px;
+        color: white;
+      }
+      .navbar a {
+        color: white;
+        text-decoration: none;
+        margin: 0 10px;
+      }
+      .navbar a:hover {
+        text-decoration: underline;
+      }
+      .dashboard-wrapper {
+        padding: 20px;
+      }
+      .dashboard-container {
+        display: flex;
+        gap: 20px;
+      }
+      .left-panel,
+      .right-panel {
+        flex: 1;
+      }
+      .chart-box,
+      .portfolio-box,
+      .calendar-box {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        margin-bottom: 20px;
+      }
+      .stats-row {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+      .stat-box {
+        flex: 1;
+        background-color: #ffffff;
+        border-radius: 8px;
+        padding: 10px;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      .stat-title {
+        font-size: 14px;
+        color: #666;
+        margin: 0;
+      }
+      .stat-value {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 5px 0 0;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      .calendar-table {
+        width: 100%;
+        max-width: 600px;
+        border-collapse: collapse;
+        margin: 20px auto;
+      }
+      .calendar-table th,
+      .calendar-table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: center;
+        background-color: #ffffff;
+      }
+      .calendar-table th {
+        background-color: #f2f2f2;
+      }
+      .calendar-table td div {
+        margin: 2px 0;
+      }
+      .alert {
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
+      .alert-info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+      }
+      .alert-dismissible .btn-close {
+        float: right;
+        cursor: pointer;
+      }
+      select,
+      button {
+        padding: 5px;
+        margin: 5px 0;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+      }
+      button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      .dashboard-title {
+        margin: 0 0 10px;
+        font-size: 20px;
+      }
+      .news-box {
+        background-color: #ffffff;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="{{ url_for('login') }}">Đăng nhập</a>
+      <a href="{{ url_for('register') }}">Đăng ký</a>
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('trading') }}">Giao dịch</a>
+      <a href="{{ url_for('portfolio') }}">Danh mục</a>
+      <a href="{{ url_for('logout') }}">Đăng xuất</a>
+    </nav>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</html>

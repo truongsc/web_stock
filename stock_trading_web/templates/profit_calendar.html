@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Lịch Lợi nhuận</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/Home.css') }}"
+    />
+    <style>
+      .chart-box {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        margin: 20px auto;
+        max-width: 800px;
+      }
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f8f9fa;
+        padding: 10px 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      .nav-item {
+        margin: 0 10px;
+        text-decoration: none;
+        color: #333;
+        font-size: 16px;
+      }
+      .nav-item:hover {
+        color: #007bff;
+      }
+    </style>
+    <!-- Sử dụng phiên bản Plotly mới nhất -->
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  </head>
+  <body>
+    <!-- Thanh điều hướng -->
+    <div class="navbar">
+      <div class="nav-left">
+        <a href="{{ url_for('dashboard') }}" class="nav-item">Dashboard</a>
+        <a href="{{ url_for('trading') }}" class="nav-item">Giao Dịch</a>
+        <a href="{{ url_for('portfolio') }}" class="nav-item">Danh Mục</a>
+        <a href="{{ url_for('cash') }}" class="nav-item">Nạp/Rút Tiền</a>
+        <a href="{{ url_for('history') }}" class="nav-item">Lịch sử</a>
+      </div>
+      <div class="nav-right">
+        <a href="{{ url_for('logout') }}" class="nav-item">Đăng xuất</a>
+      </div>
+    </div>
+
+    <!-- Nội dung -->
+    <div class="chart-box">
+      <h2 class="dashboard-title">
+        Lịch Lợi nhuận (Tháng {{ today.strftime('%B %Y') }})
+      </h2>
+      <div id="calendar-chart"></div>
+    </div>
+
+    <script>
+      // Debug dữ liệu từ server
+      console.log("Raw Chart Data:", "{{ calendar_chart | safe }}");
+
+      try {
+        const chartData = JSON.parse("{{ calendar_chart | safe }}");
+        console.log("Parsed Chart Data:", chartData);
+
+        if (chartData.data && chartData.data.length > 0) {
+          Plotly.newPlot("calendar-chart", chartData.data, chartData.layout);
+        } else {
+          document.getElementById("calendar-chart").innerHTML =
+            "<p>Không có dữ liệu để hiển thị.</p>";
+        }
+      } catch (error) {
+        console.error("Error rendering calendar chart:", error);
+        document.getElementById("calendar-chart").innerHTML =
+          "<p>Lỗi khi tải biểu đồ: " + error.message + "</p>";
+      }
+    </script>
+  </body>
+</html>

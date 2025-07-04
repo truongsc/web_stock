@@ -1,0 +1,94 @@
+.dashboard-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.dashboard-container {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+
+.left-panel {
+  background: rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  color: white;
+}
+
+.dashboard-header {
+  margin-bottom: 20px;
+}
+
+.bull-logo {
+  width: 80px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.dashboard-title {
+  font-size: 24px;
+  margin: 0;
+}
+
+.portfolio-box {
+  padding: 20px;
+}
+
+.portfolio-box label {
+  display: block;
+  text-align: left;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.portfolio-box input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.portfolio-box button {
+  width: 100%;
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.portfolio-box button:hover {
+  background-color: #218838;
+}
+
+.portfolio-box p {
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.portfolio-box a {
+  color: #28a745;
+  text-decoration: none;
+}
+
+.portfolio-box a:hover {
+  text-decoration: underline;
+}
+
+.flash-messages {
+  margin-top: 15px;
+}
+
+.flash-messages .red {
+  color: #dc3545;
+  font-size: 14px;
+}

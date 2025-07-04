@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Kết quả tìm kiếm: {{ ma_cp }}</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/Home.css') }}"
+    />
+    <style>
+      .update-price-section {
+        margin: 20px 0;
+      }
+      .heatmap-box {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+      }
+      #heatmap-table {
+        border-collapse: collapse;
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      #heatmap-table td {
+        border: 2px solid black;
+        width: 16.66%;
+        height: 80px;
+        text-align: center;
+        vertical-align: middle;
+        font-size: 14px;
+        color: white;
+        padding: 5px;
+      }
+      .negative {
+        background-color: #dc3545;
+      }
+      .positive {
+        background-color: #28a745;
+      }
+      .na {
+        background-color: #6c757d;
+        color: black;
+      }
+      .chart-box {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        margin-top: 20px;
+      }
+      .chart-error {
+        color: #dc3545;
+        text-align: center;
+        padding: 10px;
+      }
+      .financial-info-box {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        margin-top: 20px;
+      }
+      .financial-info-box p {
+        margin: 5px 0;
+      }
+      /* CSS cho thông báo flash */
+      .flash-messages {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 16px;
+        text-align: center;
+      }
+      .flash-error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+      /* CSS cho thanh tìm kiếm và nút quay lại */
+      .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .search-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+      .search-icon {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      .search-input {
+        padding: 8px 8px 8px 35px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        width: 200px;
+        font-size: 14px;
+      }
+      .back-to-dashboard {
+        padding: 8px 16px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 14px;
+      }
+      .back-to-dashboard:hover {
+        background-color: #0056b3;
+      }
+    </style>
+    <!-- Thêm ApexCharts từ CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  </head>
+  <body>
+    <!-- Thanh điều hướng -->
+    <div class="navbar">
+      <div class="nav-left">
+        <a href="{{ url_for('dashboard') }}" class="nav-item">Dashboard</a>
+        <a href="{{ url_for('detailed_dashboard') }}" class="nav-item"
+          >Tài chính doanh nghiệp
+        </a>
+        <a href="{{ url_for('trading') }}" class="nav-item">Giao Dịch</a>
+        <a href="{{ url_for('portfolio') }}" class="nav-item">Danh Mục</a>
+        <a href="{{ url_for('cash') }}" class="nav-item">Nạp/Rút Tiền</a>
+        <a href="{{ url_for('history') }}" class="nav-item">Lịch sử</a>
+      </div>
+      <div class="nav-right">
+        <a
+          href="{{ url_for('profile') }}"
+          class="nav-item text-primary"
+          style="cursor: pointer"
+        >
+          Hi, {{ current_user.ten }}
+        </a>
+
+        <a href="{{ url_for('logout') }}" class="nav-item">Đăng xuất</a>
+      </div>
+    </div>
+    <!-- Nội dung trang -->
+    <div class="dashboard-wrapper">
+      <div class="dashboard-container">
+        <!-- Bên trái -->
+        <div class="left-panel">
+          <div class="dashboard-header">
+            <h2 class="dashboard-title">Kết quả tìm kiếm: {{ ma_cp }}</h2>
+            <div style="display: flex; align-items: center; gap: 10px">
+              <!-- Thanh tìm kiếm -->
+              <div class="search-container">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="black"
+                  class="bi bi-search search-icon"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"
+                  />
+                </svg>
+                <form method="POST">
+                  <input
+                    type="text"
+                    class="search-input"
+                    name="search"
+                    placeholder="Tìm kiếm cổ phiếu..."
+                    value="{{ request.form.get('search', '') }}"
+                  />
+                </form>
+              </div>
+              <!-- Nút quay lại Dashboard -->
+              <a href="{{ url_for('dashboard') }}" class="back-to-dashboard"
+                >Quay lại Dashboard</a
+              >
+            </div>
+          </div>
+          <!-- Hiển thị thông báo flash -->
+          {% with messages = get_flashed_messages(with_categories=true) %} {% if
+          messages %}
+          <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+          {% endif %} {% endwith %}
+          <!-- Heatmap -->
+          <div class="heatmap-box">
+            <h3 class="dashboard-title">Heatmap thị trường</h3>
+            <table id="heatmap-table">
+              <tbody>
+                {% for i in range(0, 5) %}
+                <tr>
+                  {% for j in range(0, 6) %} {% set index = i * 6 + j %} {% if
+                  index < market_data|length %} {% if market_data[index].ma_cp
+                  == ma_cp %}
+                  <td
+                    class="{{ 'negative' if market_data[index].change < 0 else 'positive' }}"
+                  >
+                    {{ market_data[index].ma_cp }}<br />{{ '%+.2f' %
+                    market_data[index].change }}%
+                  </td>
+                  {% else %}
+                  <td class="na">
+                    {{ market_data[index].ma_cp }}<br />{{ '%+.2f' %
+                    market_data[index].change }}%
+                  </td>
+                  {% endif %} {% else %}
+                  <td class="na">N/A<br />0.00%</td>
+                  {% endif %} {% endfor %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <!-- Biểu đồ nến Nhật với ApexCharts -->
+          <div class="chart-box">
+            <h3 class="dashboard-title">Biểu đồ giá {{ ma_cp }}</h3>
+            <div id="stockChart" style="min-height: 400px"></div>
+            <div id="chartError" class="chart-error" style="display: none">
+              Không thể tải biểu đồ. Vui lòng kiểm tra dữ liệu hoặc kết nối
+              mạng.
+            </div>
+            <script>
+              const candlestickData = {{ chart_data.candlestick | tojson }};
+              const volumeData = {{ chart_data.volumes | tojson }};
+              console.log('Candlestick Data:', candlestickData);
+              console.log('Volume Data:', volumeData);
+
+              try {
+                if (candlestickData.length > 0) {
+                  const options = {
+                    series: [
+                      {
+                        name: 'Giá nến Nhật',
+                        type: 'candlestick',
+                        data: candlestickData
+                      },
+                      {
+                        name: 'Khối lượng',
+                        type: 'column',
+                        data: volumeData
+                      }
+                    ],
+                    chart: {
+                      type: 'candlestick',
+                      height: 400,
+                      toolbar: {
+                        show: true,
+                        tools: {
+                          zoom: true,
+                          zoomin: true,
+                          zoomout: true,
+                          pan: true,
+                          reset: true
+                        }
+                      }
+                    },
+                    plotOptions: {
+                      candlestick: {
+                        colors: {
+                          upward: '#28a745',
+                          downward: '#dc3545'
+                        }
+                      },
+                      column: {
+                        columnWidth: '30%'
+                      }
+                    },
+                    xaxis: {
+                      type: 'datetime',
+                      labels: {
+                        format: 'yyyy-MM-dd'
+                      },
+                      title: {
+                        text: 'Ngày'
+                      }
+                    },
+                    yaxis: [
+                      {
+                        title: {
+                          text: 'Giá ($)'
+                        },
+                        labels: {
+                          formatter: function (val) {
+                            return '$' + val.toFixed(2);
+                          }
+                        }
+                      },
+                      {
+                        opposite: true,
+                        title: {
+                          text: 'Khối lượng'
+                        },
+                        labels: {
+                          formatter: function (val) {
+                            return val.toLocaleString();
+                          }
+                        }
+                      }
+                    ],
+                    tooltip: {
+                      shared: true,
+                      y: [
+                        {
+                          formatter: function (val, { seriesIndex, dataPointIndex, w }) {
+                            const data = w.config.series[0].data[dataPointIndex];
+                            return `Mở cửa: $${data.y[0]}<br>Cao nhất: $${data.y[1]}<br>Thấp nhất: $${data.y[2]}<br>Đóng cửa: $${data.y[3]}`;
+                          }
+                        },
+                        {
+                          formatter: function (val) {
+                            return val.toLocaleString();
+                          }
+                        }
+                      ]
+                    },
+                    grid: {
+                      borderColor: '#e7e7e7',
+                      row: {
+                        colors: ['#f3f3f3', 'transparent'],
+                        opacity: 0.5
+                      }
+                    }
+                  };
+
+                  const chart = new ApexCharts(document.querySelector("#stockChart"), options);
+                  chart.render();
+                } else {
+                  document.getElementById('chartError').style.display = 'block';
+                }
+              } catch (error) {
+                console.error('Error rendering chart:', error);
+                document.getElementById('chartError').style.display = 'block';
+              }
+            </script>
+          </div>
+          <!-- Thông tin tài chính -->
+          <div class="financial-info-box">
+            <h3 class="dashboard-title">Thông tin tài chính {{ ma_cp }}</h3>
+            <p><strong>Giá hiện tại:</strong> ${{ financial_info.price }}</p>
+            <p>
+              <strong>Vốn hóa thị trường:</strong> ${{ financial_info.market_cap
+              }} tỷ
+            </p>
+            <p><strong>Tỷ lệ P/E:</strong> {{ financial_info.pe_ratio }}</p>
+            <p><strong>EPS:</strong> {{ financial_info.eps }}</p>
+            <p>
+              <strong>Khối lượng giao dịch:</strong> {{ financial_info.volume }}
+            </p>
+            <p>
+              <strong>% Thay đổi:</strong> {{ '%+.2f' % financial_info.change
+              }}%
+            </p>
+            <p>
+              <strong>Tên công ty:</strong> {{ financial_info.company_name }}
+            </p>
+            <p><strong>Ngành:</strong> {{ financial_info.sector }}</p>
+            <p><strong>Beta:</strong> {{ financial_info.beta }}</p>
+            <p>
+              <strong>Lợi tức cổ tức:</strong> {{ financial_info.dividend_yield
+              }}%
+            </p>
+            <p>
+              <strong>Khối lượng trung bình 10 ngày:</strong> {{
+              financial_info.average_volume_10d }} triệu
+            </p>
+            <p>
+              <strong>Khối lượng trung bình 30 ngày:</strong> {{
+              financial_info.average_volume_30d }} triệu
+            </p>
+          </div>
+        </div>
+        <!-- Bên phải -->
+        <div class="right-panel">
+          <div class="news-box">
+            <h3 class="dashboard-title">📰 Tin tức thị trường</h3>
+            <br />
+            <div id="news-content">Đang tải tin tức...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Nút cập nhật giá -->
+    <div class="update-price-section">
+      <form method="POST" action="{{ url_for('update_stock_prices') }}">
+        <button type="submit" class="btn btn-primary">
+          Cập nhật dữ liệu cổ phiếu
+        </button>
+      </form>
+    </div>
+  </body>
+</html>

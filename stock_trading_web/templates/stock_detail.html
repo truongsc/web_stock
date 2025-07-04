@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Chi Tiết {{ stock.ma_cp }}</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/Home.css') }}"
+    />
+  </head>
+  <body>
+    <!-- Thanh điều hướng -->
+    <div class="navbar">
+      <div class="nav-left">
+        <a href="{{ url_for('dashboard') }}" class="nav-item">Dashboard</a>
+        <a href="{{ url_for('detailed_dashboard') }}" class="nav-item"
+          >Tài chính doanh nghiệp
+        </a>
+        <a href="{{ url_for('trading') }}" class="nav-item">Giao Dịch</a>
+        <a href="{{ url_for('portfolio') }}" class="nav-item">Danh Mục</a>
+        <a href="{{ url_for('cash') }}" class="nav-item">Nạp/Rút Tiền</a>
+        <a href="{{ url_for('history') }}" class="nav-item">Lịch sử</a>
+      </div>
+      <div class="nav-right">
+        <a
+          href="{{ url_for('profile') }}"
+          class="nav-item text-primary"
+          style="cursor: pointer"
+        >
+          Hi, {{ current_user.ten }}
+        </a>
+
+        <a href="{{ url_for('logout') }}" class="nav-item">Đăng xuất</a>
+      </div>
+    </div>
+    <!-- Nội dung -->
+    <div class="dashboard-wrapper">
+      <div class="dashboard-container">
+        <!-- Bên trái -->
+        <div class="left-panel">
+          <div class="dashboard-header">
+            <h2 class="dashboard-title">Chi Tiết {{ stock.ma_cp }}</h2>
+          </div>
+          <!-- Thông tin sở hữu -->
+          <div class="portfolio-box">
+            <h3 class="dashboard-title">Thông tin sở hữu</h3>
+            <div class="stats-row">
+              <div class="stat-box">
+                <p class="stat-title">Số lượng sở hữu</p>
+                <p class="stat-value">{{ stock.so_luong }}</p>
+              </div>
+              <div class="stat-box">
+                <p class="stat-title">Giá mua trung bình</p>
+                <p class="stat-value">${{ stock.average_buy_price }}</p>
+              </div>
+              <div class="stat-box">
+                <p class="stat-title">Giá hiện tại</p>
+                <p class="stat-value">${{ stock.current_price }}</p>
+              </div>
+            </div>
+            <div class="stats-row">
+              <div class="stat-box">
+                <p class="stat-title">Lợi nhuận</p>
+                <p
+                  class="stat-value {{ 'green' if stock.profit >= 0 else 'red' }}"
+                >
+                  ${{ stock.profit }}
+                </p>
+              </div>
+              <div class="stat-box">
+                <p class="stat-title">% Lợi nhuận</p>
+                <p
+                  class="stat-value {{ 'green' if stock.profit_percentage >= 0 else 'red' }}"
+                >
+                  {{ '%+.2f' % stock.profit_percentage }}%
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- Thông tin tài chính -->
+          <div class="portfolio-box">
+            <h3 class="dashboard-title">Thông tin tài chính</h3>
+            <!-- Tổng quan -->
+            <h4>Tổng quan</h4>
+            <div class="stats-row">
+              <div class="stat-box">
+                <p class="stat-title">Tên công ty</p>
+                <p class="stat-value">{{ stock.company_name }}</p>
+              </div>
+              <div class="stat-box">
+                <p class="stat-title">Ngành</p>
+                <p class="stat-value">{{ stock.sector }}</p>
+              </div>
+              <div class="stat-box">
+                <p class="stat-title">Vốn hóa thị trường</p>
+                <p class="stat-value">${{ stock.market_cap }} tỷ</p>
+              </div>
+            </div>
+            <div class="stats-row">
+              <div class="stat-box">
+                <p class="stat-title">Tỷ số P/E</p>
+                <p class="stat-value">{{ stock.pe_ratio }}</p>
+              </div>
+              <div class="stat-box">
+                <p class="stat-title">EPS</p>
+                <p class="stat-value">${{ stock.eps }}</p>
+              </div>
+              <div class="stat-box">
+                <p class="stat-title">Beta</p>
+                <p class="stat-value">{{ stock.beta }}</p>
+              </div>
+            </div>
+            <!-- Cổ tức -->
+            <h4>Cổ tức</h4>
+            <div class="stats-row">
+              <div class="stat-box">
+                <p class="stat-title">Tỷ suất cổ tức</p>
+                <p class="stat-value">{{ stock.dividend_yield }}%</p>
+              </div>
+              <div class="stat-box">
+                <p class="stat-title">Cổ tức gần nhất</p>
+                <p class="stat-value">
+                  {% if stock.latest_dividend %} ${{
+                  stock.latest_dividend.amount }} ({{ stock.latest_dividend.date
+                  }}) {% else %} N/A {% endif %}
+                </p>
+              </div>
+            </div>
+            <!-- Khối lượng -->
+            <h4>Khối lượng giao dịch</h4>
+            <div class="stats-row">
+              <div class="stat-box">
+                <p class="stat-title">TB 10 ngày</p>
+                <p class="stat-value">{{ stock.average_volume_10d }} triệu</p>
+              </div>
+              <div class="stat-box">
+                <p class="stat-title">TB 30 ngày</p>
+                <p class="stat-value">{{ stock.average_volume_30d }} triệu</p>
+              </div>
+            </div>
+            <!-- Tài chính doanh nghiệp -->
+            <h4>Tài chính doanh nghiệp</h4>
+            <div class="stats-row">
+              <div class="stat-box">
+                <p class="stat-title">Doanh thu</p>
+                <p class="stat-value">
+                  {{ stock.revenue if stock.revenue != 'N/A' else 'N/A' }} {{
+                  'tỷ' if stock.revenue != 'N/A' else '' }}
+                </p>
+              </div>
+              <div class="stat-box">
+                <p class="stat-title">Lợi nhuận ròng</p>
+                <p class="stat-value">
+                  {{ stock.net_income if stock.net_income != 'N/A' else 'N/A' }}
+                  {{ 'tỷ' if stock.net_income != 'N/A' else '' }}
+                </p>
+              </div>
+              <div class="stat-box">
+                <p class="stat-title">Biên lợi nhuận</p>
+                <p class="stat-value">
+                  {{ stock.net_margin if stock.net_margin != 'N/A' else 'N/A' }}
+                  {{ '%' if stock.net_margin != 'N/A' else '' }}
+                </p>
+              </div>
+            </div>
+            <div class="stats-row">
+              <div class="stat-box">
+                <p class="stat-title">Tỷ lệ Nợ/Vốn CSH</p>
+                <p class="stat-value">{{ stock.de_ratio }}</p>
+              </div>
+              <div class="stat-box">
+                <p class="stat-title">Dòng tiền tự do</p>
+                <p class="stat-value">
+                  {{ stock.free_cash_flow if stock.free_cash_flow != 'N/A' else
+                  'N/A' }} {{ 'tỷ' if stock.free_cash_flow != 'N/A' else '' }}
+                </p>
+              </div>
+            </div>
+            <!-- Giá lịch sử -->
+            <h4>Giá lịch sử</h4>
+            <div class="stats-row">
+              <div class="stat-box">
+                <p class="stat-title">Cao 52 tuần</p>
+                <p class="stat-value">${{ stock.high_52w }}</p>
+              </div>
+              <div class="stat-box">
+                <p class="stat-title">Thấp 52 tuần</p>
+                <p class="stat-value">${{ stock.low_52w }}</p>
+              </div>
+              <div class="stat-box">
+                <p class="stat-title">% Thay đổi 52 tuần</p>
+                <p
+                  class="stat-value {{ 'green' if stock.price_change_52w >= 0 else 'red' }}"
+                >
+                  {{ '%+.2f' % stock.price_change_52w if stock.price_change_52w
+                  != 'N/A' else 'N/A' }} {{ '%' if stock.price_change_52w !=
+                  'N/A' else '' }}
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- Hành động -->
+          <div class="portfolio-box">
+            <h3 class="dashboard-title">Hành động</h3>
+            <a
+              href="{{ url_for('trade_stock', ma_cp=stock.ma_cp) }}"
+              class="action-btn"
+              >Giao dịch {{ stock.ma_cp }}</a
+            >
+          </div>
+        </div>
+        <!-- Bên phải -->
+        <div class="right-panel">
+          <div class="news-box">
+            <h3 class="dashboard-title">📰 Tin tức thị trường</h3>
+            <br />
+            <div id="news-content">Đang tải tin tức...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

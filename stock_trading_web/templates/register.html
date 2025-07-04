@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Đăng Ký</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/login.css') }}"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-image: url("{{ url_for("static", filename="images/background.png") }}");
+        background-size: cover;
+        background-position: center;
+        font-family: Arial, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-wrapper">
+      <div class="dashboard-container">
+        <div class="left-panel">
+          <div class="dashboard-header">
+            <h2 class="dashboard-title">Đăng Ký</h2>
+          </div>
+          <div class="portfolio-box">
+            <form method="POST" action="{{ url_for('register') }}">
+              <label for="ten">Tên:</label>
+              <input type="text" id="ten" name="ten" required />
+              <label for="tk">Tài khoản:</label>
+              <input type="text" id="tk" name="tk" required />
+              <label for="mk">Mật khẩu:</label>
+              <input type="password" id="mk" name="mk" required />
+              <button type="submit">Đăng Ký</button>
+            </form>
+            <p>
+              Đã có tài khoản? <a href="{{ url_for('login') }}">Đăng nhập</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
