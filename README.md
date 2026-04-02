@@ -3,12 +3,8 @@
 ## 📋 Tổng quan dự án
 
 **Tên dự án:** Stock Trading Web Application  
-**Thời gian thực hiện:** [Tháng/Năm] - [Tháng/Năm]  
 **Vai trò:** Full-stack Developer  
 **Công nghệ chính:** Python, Flask, MySQL, JavaScript, HTML/CSS  
-**Link GitHub:** [github.com/yourusername/stock-trading-web]  
-**Demo:** [Link demo nếu có]
-
 ---
 
 ## 🎯 Mục tiêu dự án
